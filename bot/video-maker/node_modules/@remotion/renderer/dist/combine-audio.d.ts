@@ -1,0 +1,21 @@
+import type { LogLevel } from './log-level';
+import type { CancelSignal } from './make-cancel-signal';
+import type { AudioCodec } from './options/audio-codec';
+export declare const durationOf1Frame: number;
+export declare const getClosestAlignedTime: (targetTime: number) => number;
+export declare const createCombinedAudio: ({ seamless, filelistDir, files, indent, logLevel, audioBitrate, resolvedAudioCodec, output, chunkDurationInSeconds, addRemotionMetadata, binariesDirectory, fps, cancelSignal, onProgress, }: {
+    seamless: boolean;
+    filelistDir: string;
+    files: string[];
+    indent: boolean;
+    logLevel: LogLevel;
+    audioBitrate: string | null;
+    resolvedAudioCodec: AudioCodec;
+    output: string;
+    chunkDurationInSeconds: number;
+    addRemotionMetadata: boolean;
+    binariesDirectory: string | null;
+    fps: number;
+    cancelSignal: CancelSignal | undefined;
+    onProgress: (frames: number) => void;
+}) => Promise<string>;

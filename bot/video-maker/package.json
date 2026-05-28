@@ -1,0 +1,19 @@
+{
+  "name": "auto-shorts",
+  "version": "1.0.0",
+  "description": "Remotion Auto Video Maker",
+  "scripts": {
+    "start": "remotion studio src/index.ts",
+    "build": "remotion render src/index.ts MyVideo out/video.mp4"
+  },
+  "dependencies": {
+    "remotion": "4.0.140",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.140",
+    "@types/react": "^18.0.26",
+    "typescript": "^5.0.0"
+  }
+}

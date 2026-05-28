@@ -1,0 +1,216 @@
+/* src/app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #f8fafc;
+  color: #1e293b;
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Stepper */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.step {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+}
+
+.step.active {
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+}
+
+.step-divider {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+/* Card */
+.card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+/* Form */
+.form-group {
+  margin-bottom: 28px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #334155;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 15px;
+  color: #1e293b;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+
+.input-field::placeholder {
+  color: #94a3b8;
+}
+
+.input-field:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Tags */
+.source-tags {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag:hover {
+  background: #f8fafc;
+}
+
+.tag.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #2563eb;
+}
+
+.tag-icon {
+  font-size: 14px;
+}
+
+/* Button */
+.btn-primary {
+  background: #93c5fd;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-primary:hover {
+  background: #60a5fa;
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+/* Responsive Utilities - Fix triệt để cho Penny */
+@media (max-width: 768px) {
+  /* Container chính */
+  main {
+    padding: 12px !important;
+  }
+
+  .stepper {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .step {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  .step-divider {
+    display: none !important; /* Ẩn dấu mũi tên cho đỡ rối */
+  }
+
+  .card {
+    padding: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .dashboard-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    text-align: center;
+  }
+
+  .mobile-col {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+  }
+  
+  .mobile-col > div {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  .mobile-wrap {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .mobile-img-col {
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .btn-primary {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    padding: 14px !important; /* To hơn tí cho dễ bấm tay */
+    font-size: 13px !important;
+  }
+
+  /* Fix ô Input ngày giờ trên mobile */
+  .input-field {
+    font-size: 14px !important;
+    padding: 10px !important;
+  }
+}

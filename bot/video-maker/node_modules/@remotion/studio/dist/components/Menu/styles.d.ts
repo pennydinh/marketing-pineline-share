@@ -1,0 +1,12 @@
+import type React from 'react';
+export declare const MENU_VERTICAL_PADDING = 4;
+export declare const SUBMENU_LEFT_INSET = -8;
+export declare const MAX_MENU_WIDTH = 400;
+export declare const MAX_MOBILE_MENU_WIDTH = 300;
+export declare const SHADOW_TOWARDS_BOTTOM = "0 2px 8px rgba(0, 0, 0, 0.5)";
+export declare const SHADOW_TOWARDS_TOP = "0 -2px 8px rgba(0, 0, 0, 0.5)";
+export declare const menuContainerTowardsBottom: React.CSSProperties;
+export declare const menuContainerTowardsTop: React.CSSProperties;
+export declare const fullScreenOverlay: React.CSSProperties;
+export declare const outerPortal: React.CSSProperties;
+export declare const inlineCodeSnippet: React.CSSProperties;

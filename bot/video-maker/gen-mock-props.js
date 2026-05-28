@@ -1,0 +1,31 @@
+const fs = require('fs');
+
+const mockProps = {
+  audioUrl: "audio.wav",
+  title: "AI Trends",
+  theme: "dark",
+  lines: [
+    { text: "OpenAI vừa công bố", startFrame: 0, sceneIndex: 0 },
+    { text: "mô hình mới nhất", startFrame: 30, sceneIndex: 0 },
+    { text: "Khả năng tự viết code", startFrame: 60, sceneIndex: 0 },
+    { text: "vượt xa phiên bản cũ", startFrame: 90, sceneIndex: 0 },
+    { text: "Tốc độ xử lý", startFrame: 150, sceneIndex: 1 },
+    { text: "tăng lên đến 10 lần", startFrame: 180, sceneIndex: 1 }
+  ],
+  scenes: [
+    {
+      text: "OpenAI vừa công bố mô hình mới nhất. Khả năng tự viết code vượt xa phiên bản cũ.",
+      startFrame: 0,
+      durationFrames: 150,
+      block: { type: "info", icon: "🤖", title: "Mô Hình AI", subtitle: "Tự động lập trình" }
+    },
+    {
+      text: "Tốc độ xử lý tăng lên đến 10 lần so với các thế hệ trước.",
+      startFrame: 150,
+      durationFrames: 150,
+      block: { type: "comparison", title: "Tốc Độ (Code)", left: { label: "Cũ", value: "30s" }, right: { label: "Mới", value: "3s" } }
+    }
+  ]
+};
+
+fs.writeFileSync('props.json', JSON.stringify(mockProps, null, 2));

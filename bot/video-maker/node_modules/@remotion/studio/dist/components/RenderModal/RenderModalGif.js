@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RenderModalGif = void 0;
+const jsx_runtime_1 = require("react/jsx-runtime");
+const react_1 = require("react");
+const Checkbox_1 = require("../Checkbox");
+const layout_1 = require("../layout");
+const NumberOfLoopsSetting_1 = require("./NumberOfLoopsSetting");
+const NumberSetting_1 = require("./NumberSetting");
+const OptionExplainerBubble_1 = require("./OptionExplainerBubble");
+const layout_2 = require("./layout");
+const container = {
+    flex: 1,
+};
+const RenderModalGif = ({ everyNthFrame, limitNumberOfGifLoops, numberOfGifLoopsSetting, setEveryNthFrameSetting, setLimitNumberOfGifLoops, setNumberOfGifLoopsSetting, }) => {
+    const onShouldLimitNumberOfGifLoops = (0, react_1.useCallback)((e) => {
+        setLimitNumberOfGifLoops(e.target.checked);
+    }, [setLimitNumberOfGifLoops]);
+    return ((0, jsx_runtime_1.jsxs)("div", { style: container, children: [(0, jsx_runtime_1.jsx)(NumberSetting_1.NumberSetting, { name: "Every nth frame", min: 1, onValueChanged: setEveryNthFrameSetting, value: everyNthFrame, step: 1 }), (0, jsx_runtime_1.jsxs)("div", { style: layout_2.optionRow, children: [(0, jsx_runtime_1.jsxs)("div", { style: layout_2.label, children: ["Limit GIF loops ", (0, jsx_runtime_1.jsx)(layout_1.Spacing, { x: 0.5 }), (0, jsx_runtime_1.jsx)(OptionExplainerBubble_1.OptionExplainerBubble, { id: "numberOfGifLoopsOption" })] }), (0, jsx_runtime_1.jsx)("div", { style: layout_2.rightRow, children: (0, jsx_runtime_1.jsx)(Checkbox_1.Checkbox, { checked: limitNumberOfGifLoops, onChange: onShouldLimitNumberOfGifLoops, name: "limitNumberOfGifLoops" }) })] }), limitNumberOfGifLoops ? ((0, jsx_runtime_1.jsx)(NumberOfLoopsSetting_1.NumberOfLoopsSetting, { numberOfGifLoops: numberOfGifLoopsSetting, setNumberOfGifLoops: setNumberOfGifLoopsSetting })) : null] }));
+};
+exports.RenderModalGif = RenderModalGif;

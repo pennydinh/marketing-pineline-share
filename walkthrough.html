@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Content Pipeline – Walkthrough Tổng Kết (Phương Edition)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #1e293b;
+    background: #f8fafc;
+    line-height: 1.7;
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 28px;
+    color: #0f172a;
+    margin-bottom: 8px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 20px;
+    color: #1e40af;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    border-radius: 0 8px 8px 0;
+  }
+
+  h3 {
+    font-size: 16px;
+    color: #334155;
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+
+  p, li {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 8px;
+  }
+
+  blockquote {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #166534;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+
+  th {
+    background: #1e293b;
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) { background: #f8fafc; }
+  tr:hover { background: #eff6ff; }
+
+  code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #0f172a;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 12px;
+    margin: 16px 0;
+    line-height: 1.6;
+  }
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+  }
+  .badge-green { background: #16a34a; }
+  .badge-blue { background: #2563eb; }
+
+  hr {
+    border: none;
+    border-top: 2px solid #e2e8f0;
+    margin: 32px 0;
+  }
+
+  .section-icon { margin-right: 6px; }
+
+  .flow-box {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid #2563eb;
+  }
+
+  .flow-arrow {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 18px;
+    margin: 4px 0;
+  }
+
+  .arch-box {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 20px;
+    border-radius: 12px;
+    font-family: 'SF Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+
+  @media print {
+    body { padding: 20px; }
+    h2 { break-before: avoid; }
+    table { break-inside: avoid; }
+    .flow-box { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🚀 AI Content Pipeline – Walkthrough Tổng Kết</h1>
+<p><strong>Phương Edition</strong> &nbsp; <span class="badge badge-green">✅ FINAL</span></p>
+<p style="font-size: 13px; color: #94a3b8;">Chủ sở hữu: Penny (Phương) &nbsp;|&nbsp; Cập nhật: 23/04/2026 &nbsp;|&nbsp; Deploy: Vercel + Bot Local</p>
+
+<hr>
+
+<h2>📊 Tech Stack Tổng Quan</h2>
+
+<table>
+<tr><th>Thành phần</th><th>Công nghệ</th><th>Chi tiết</th></tr>
+<tr><td>🖥️ Frontend</td><td>Next.js 14 (React)</td><td>Giao diện web, responsive mobile, deploy trên Vercel</td></tr>
+<tr><td>⚙️ Backend API</td><td>Next.js API Routes</td><td>Serverless functions xử lý viết bài, tạo ảnh, lưu DB</td></tr>
+<tr><td>🔍 Cào tin tức</td><td>Firecrawl</td><td>Bóc HTML từ TechCrunch, a16z, IndieHackers... sang Markdown</td></tr>
+<tr><td>🔍 Cào MXH</td><td>RapidAPI</td><td>Kéo bài trending từ X/Twitter, Instagram theo keyword</td></tr>
+<tr><td>✍️ Viết bài</td><td><strong>Claude Opus 4.5</strong></td><td>Giọng văn "Phương Edition", 2 format: POV + Tin nhanh</td></tr>
+<tr><td>🎨 Tạo ảnh</td><td><strong>DALL-E 3</strong></td><td>Ảnh vuông 1:1, Cinematic / Ghibli-inspired, fix prompt cứng</td></tr>
+<tr><td>🎬 Kịch bản video</td><td><strong>Gemini 2.5 Flash</strong></td><td>Rút gọn bài viết thành script 30 từ, trần thuật khách quan</td></tr>
+<tr><td>🔊 Giọng đọc TTS</td><td><strong>Gemini Voice (Callirrhoe)</strong></td><td>Chuyển script thành file .wav</td></tr>
+<tr><td>🎥 Render video</td><td><strong>Remotion</strong> + FFmpeg</td><td>Video dọc 9:16 (Reels/TikTok), spring animation, blur BG</td></tr>
+<tr><td>📱 Đăng Page</td><td>Facebook Graph API</td><td>Lên lịch hoặc đăng ngay, kèm ảnh + video Reels</td></tr>
+<tr><td>👥 Đăng Groups</td><td><strong>Playwright</strong></td><td>Bot Chrome tự động, dùng cookies.json đăng vào 4 nhóm</td></tr>
+<tr><td>🗄️ Database</td><td>Neon PostgreSQL</td><td>Lưu trạng thái bài, URL ảnh/video, lịch đăng</td></tr>
+<tr><td>🌐 Hosting</td><td>Vercel + Local Mac</td><td>Web trên mây, Bot chạy máy cá nhân</td></tr>
+</table>
+
+<hr>
+
+<h2>🔄 Luồng Hoạt Động (End-to-End)</h2>
+
+<div class="flow-box">
+  <div class="flow-step">
+    <span>1️⃣</span>
+    <div><strong>👤 Penny mở Web → Bước 1: Research</strong><br>Nhập keyword, chọn nguồn (TechCrunch, X, Instagram...), bấm "Tìm kiếm"</div>
+  </div>
+  <div class="flow-arrow">⬇️</div>
+  
+  <div class="flow-step">
+    <span>2️⃣</span>
+    <div><strong>⚡ API cào tin</strong><br>Firecrawl bóc HTML báo chí → RapidAPI kéo bài MXH trending</div>
+  </div>
+  <div class="flow-arrow">⬇️</div>
+  
+  <div class="flow-step">
+    <span>3️⃣</span>
+    <div><strong>📋 Bước 2: Lọc & Chọn Format</strong><br>Penny tick bài hay, chọn POV (góc nhìn) hoặc Tin Nhanh (giật gân)</div>
+  </div>
+  <div class="flow-arrow">⬇️</div>
+  
+  <div class="flow-step">
+    <span>4️⃣</span>
+    <div><strong>✍️ Claude Opus 4.5 viết bài</strong> + <strong>🎨 DALL-E 3 tạo ảnh</strong><br>AI viết content theo persona Phương, đồng thời tạo ảnh 1:1 Cinematic/Ghibli</div>
+  </div>
+  <div class="flow-arrow">⬇️</div>
+  
+  <div class="flow-step">
+    <span>5️⃣</span>
+    <div><strong>📋 Bước 3: Review & Lên Lịch</strong><br>Penny sửa bài nếu cần, chọn ảnh (gốc hoặc AI), đặt giờ đăng, tick "Tạo Video"</div>
+  </div>
+  <div class="flow-arrow">⬇️</div>
+  
+  <div class="flow-step" style="border-left-color: #16a34a;">
+    <span>6️⃣</span>
+    <div><strong>🚀 Penny bấm "Đăng"</strong><br>
+      • <em>Đăng Page</em> → Facebook Graph API lên lịch / đăng ngay<br>
+      • <em>Tạo Video</em> → Lệnh gửi xuống DB, Bot tự nhặt<br>
+      • <em>Đăng Groups</em> → Lệnh gửi xuống DB, Bot chờ đúng giờ rồi đăng
+    </div>
+  </div>
+  <div class="flow-arrow">⬇️</div>
+  
+  <div class="flow-step" style="border-left-color: #7c3aed;">
+    <span>7️⃣</span>
+    <div><strong>🤖 Bot Local (Tự động)</strong><br>
+      • Gemini viết kịch bản → TTS → Remotion render video → Upload Reels<br>
+      • Playwright mở Chrome ảo → Đăng bài + ảnh vào 4 nhóm FB
+    </div>
+  </div>
+  <div class="flow-arrow">⬇️</div>
+  
+  <div class="flow-step" style="border-left-color: #16a34a; background: #f0fdf4;">
+    <span>✅</span>
+    <div><strong>Hoàn tất!</strong><br>DB cập nhật trạng thái → Web hiển thị Lịch sử hoạt động</div>
+  </div>
+</div>
+
+<hr>
+
+<h2>🏗️ Kiến Trúc Hệ Thống</h2>
+
+<div class="arch-box">┌─────────────────────────────────────────────────────┐
+│                  ☁️  VERCEL (Đám Mây)                │
+│                                                      │
+│  ┌──────────────┐    ┌───────────────────────────┐  │
+│  │  Frontend     │───▶│  API Routes               │  │
+│  │  (Next.js)    │    │  /api/research            │  │
+│  │  page.tsx     │    │  /api/write               │  │
+│  │  globals.css  │    │  /api/approve             │  │
+│  └──────────────┘    └───────────┬───────────────┘  │
+│                                  │                    │
+│                    ┌─────────────▼─────────────┐     │
+│                    │  AI Services              │     │
+│                    │  • Claude Opus 4.5 (viết)  │     │
+│                    │  • DALL-E 3 (ảnh)          │     │
+│                    │  • Firecrawl (cào tin)     │     │
+│                    │  • RapidAPI (cào MXH)      │     │
+│                    └─────────────┬─────────────┘     │
+│                                  │                    │
+│                    ┌─────────────▼─────────────┐     │
+│                    │  🗄️ Neon PostgreSQL        │     │
+│                    │  (Database trên mây)       │     │
+│                    └─────────────┬─────────────┘     │
+└──────────────────────────────────┼────────────────────┘
+                                   │
+                      Kết nối qua DATABASE_URL
+                                   │
+┌──────────────────────────────────┼────────────────────┐
+│              💻 MÁY TÍNH CỦA PENNY (Local)           │
+│                                  │                    │
+│              ┌───────────────────▼──────────────┐    │
+│              │  🤖 Bot (post-groups.js)          │    │
+│              │  • Quét DB mỗi 10 phút           │    │
+│              │  • Render Video (Remotion)        │    │
+│              │  • Upload Reels (Graph API)       │    │
+│              │  • Đăng Groups (Playwright)       │    │
+│              └──────────────────────────────────┘    │
+└──────────────────────────────────────────────────────┘</div>
+
+<hr>
+
+<h2>📅 Vận Hành Hàng Ngày</h2>
+
+<h3>Quy trình của Penny mỗi ngày:</h3>
+<table>
+<tr><th>Bước</th><th>Hành động</th><th>Ở đâu</th><th>Thời gian</th></tr>
+<tr><td>1️⃣</td><td>Bật Bot: <code>cd bot && node post-groups.js</code></td><td>Terminal</td><td>1 lần / ngày</td></tr>
+<tr><td>2️⃣</td><td>Thu nhỏ Terminal, để Bot chạy ngầm</td><td>Terminal</td><td>–</td></tr>
+<tr><td>3️⃣</td><td>Mở Web → Bước 1: Nhập keyword, bấm Research</td><td>Web</td><td>2 phút</td></tr>
+<tr><td>4️⃣</td><td>Bước 2: Tick bài → Chọn format → Bấm "Viết & Tạo ảnh"</td><td>Web</td><td>3 phút</td></tr>
+<tr><td>5️⃣</td><td>Bước 3: Review → Sửa bài → Chọn ảnh → Đặt giờ đăng</td><td>Web</td><td>5 phút</td></tr>
+<tr><td>6️⃣</td><td>Bấm "Đăng Page" hoặc "Đăng Tất Cả"</td><td>Web</td><td>1 click</td></tr>
+<tr><td>7️⃣</td><td>Đi cafe, Bot tự lo phần còn lại ☕</td><td>Tự động</td><td>–</td></tr>
+</table>
+
+<h3>Bot tự động làm gì?</h3>
+<table>
+<tr><th>Nhiệm vụ</th><th>Cách hoạt động</th><th>Tần suất</th></tr>
+<tr><td>🎬 Render Video</td><td>Lấy bài mới → Gemini viết script → TTS → Remotion render → Upload Reels</td><td>Cuốn chiếu liên tục</td></tr>
+<tr><td>👥 Đăng Groups</td><td>Chờ đúng giờ hẹn → Mở Chrome ảo → Đăng bài + ảnh vào 4 nhóm</td><td>Khi tới giờ đã lên lịch</td></tr>
+<tr><td>🔄 Quét lại</td><td>Nghỉ 10 phút → Quét DB xem có lệnh mới</td><td>Mỗi 10 phút</td></tr>
+</table>
+
+<hr>
+
+<h2>🔑 Biến Môi Trường (Environment Variables)</h2>
+
+<table>
+<tr><th>Biến</th><th>Nơi dùng</th><th>Mô tả</th></tr>
+<tr><td><code>ANTHROPIC_API_KEY</code></td><td>Vercel</td><td>Key gọi Claude Opus 4.5 để viết bài</td></tr>
+<tr><td><code>OPENAI_API_KEY</code></td><td>Vercel</td><td>Key gọi DALL-E 3 để tạo ảnh</td></tr>
+<tr><td><code>DATABASE_URL</code></td><td>Vercel + Bot</td><td>Connection string tới Neon PostgreSQL</td></tr>
+<tr><td><code>FACEBOOK_ACCESS_TOKEN</code></td><td>Vercel + Bot</td><td>Token đăng bài Page + Upload Reels</td></tr>
+<tr><td><code>FACEBOOK_PAGE_ID</code></td><td>Vercel + Bot</td><td>ID trang Facebook của Penny</td></tr>
+<tr><td><code>RAPID_API_KEY</code></td><td>Vercel</td><td>Key cào MXH từ RapidAPI</td></tr>
+<tr><td><code>BRAVE_API_KEY</code></td><td>Vercel</td><td>Key tìm kiếm tin tức (backup)</td></tr>
+<tr><td><code>GEMINI_API_KEY</code></td><td>Bot Local</td><td>Key cho Gemini TTS + Script</td></tr>
+</table>
+
+<hr>
+
+<h2>📱 Responsive UI/UX (Mobile Fix)</h2>
+
+<table>
+<tr><th>File</th><th>Thay đổi</th></tr>
+<tr><td><code>src/app/globals.css</code></td><td>Thêm media query <code>@media (max-width: 768px)</code> với <code>!important</code></td></tr>
+<tr><td><code>src/app/page.tsx</code></td><td>Gắn class CSS utility vào các thẻ HTML</td></tr>
+</table>
+
+<h3>Các class responsive:</h3>
+<table>
+<tr><th>Class</th><th>Tác dụng trên Mobile (≤768px)</th></tr>
+<tr><td><code>dashboard-header</code></td><td>Header xếp dọc, căn giữa</td></tr>
+<tr><td><code>mobile-col</code></td><td>Flex container chuyển sang column</td></tr>
+<tr><td><code>mobile-wrap</code></td><td>Nhóm nút bấm xếp dọc, full-width</td></tr>
+<tr><td><code>mobile-img-col</code></td><td>Ảnh minh họa xếp dọc, full-width</td></tr>
+<tr><td><code>mobile-full-btn</code></td><td>Nút bấm rộng 100%, dễ chạm</td></tr>
+</table>
+
+<hr>
+
+<h2>🛠️ Xử Lý Sự Cố (Troubleshooting)</h2>
+
+<table>
+<tr><th>Tình huống</th><th>Nguyên nhân</th><th>Cách xử lý</th></tr>
+<tr><td>Web báo <strong>"CẢNH BÁO LỖI TỪ AI"</strong></td><td>API key hết tiền / quota</td><td>Kiểm tra credit trên dashboard Anthropic/OpenAI</td></tr>
+<tr><td>Web báo <strong>404 model not found</strong></td><td>Model AI bị giới hạn / sai tên</td><td>Đổi model trong <code>writer.ts</code></td></tr>
+<tr><td>Bot báo <strong>MODULE_NOT_FOUND</strong></td><td>Chạy sai thư mục</td><td>Phải <code>cd bot</code> trước rồi mới chạy</td></tr>
+<tr><td>Bot báo <strong>cookies lỗi</strong></td><td>Cookie Facebook hết hạn</td><td>Xuất lại <code>cookies.json</code> từ trình duyệt</td></tr>
+<tr><td>Video <strong>không render</strong></td><td>Thiếu FFmpeg hoặc Remotion</td><td><code>cd bot/video-maker && npm install</code></td></tr>
+<tr><td>Facebook <strong>chặn đăng Group</strong></td><td>IP bất thường / đăng quá nhanh</td><td>Chờ 24h, tăng thời gian chờ giữa nhóm</td></tr>
+<tr><td>Giao diện Mobile <strong>vẫn vỡ</strong></td><td>Cache trình duyệt</td><td>Hard refresh: <code>Ctrl+Shift+R</code> hoặc xóa cache</td></tr>
+</table>
+
+<hr>
+
+<h2>📂 Cấu Trúc Thư Mục</h2>
+
+<pre><code>ai-content-pipeline/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx              ← Giao diện chính (3 bước)
+│   │   ├── globals.css           ← CSS + Responsive
+│   │   └── api/
+│   │       ├── research/route.ts ← API cào tin
+│   │       ├── write/route.ts    ← API viết bài + tạo ảnh
+│   │       └── approve/route.ts  ← API duyệt + đăng Page
+│   └── lib/
+│       └── ai/
+│           ├── writer.ts         ← Claude Opus 4.5
+│           └── image-generator.ts ← DALL-E 3
+├── bot/
+│   ├── post-groups.js            ← 🤖 Bot chính (Video + Groups)
+│   ├── cookies.json              ← Cookie FB cho Playwright
+│   └── video-maker/
+│       ├── src/MainVideo.tsx     ← Template video Remotion
+│       ├── render-cmd.js         ← Script render + TTS
+│       └── out/video.mp4        ← Video output
+├── .env.local                    ← API Keys (KHÔNG push lên Git)
+└── package.json</code></pre>
+
+<hr>
+
+<h2>🚀 Thương Mại Hoá (Tương Lai)</h2>
+
+<table>
+<tr><th>Phương án</th><th>Mô tả</th><th>Phù hợp với</th></tr>
+<tr><td><strong>ZIP + README</strong></td><td>Nén source code, gửi kèm hướng dẫn cài đặt</td><td>Khách hàng biết code (Dev/IT)</td></tr>
+<tr><td><strong>Electron App</strong></td><td>Đóng gói Bot thành file .exe / .dmg, click cài như Zalo PC</td><td>Khách hàng phổ thông</td></tr>
+<tr><td><strong>Vercel Template</strong></td><td>Tạo template 1-click deploy trên Vercel</td><td>Cộng đồng open-source</td></tr>
+<tr><td><strong>SaaS + VPS</strong></td><td>Chạy Bot trên server 24/7, khách chỉ dùng Web</td><td>Dịch vụ cho thuê (subscription)</td></tr>
+</table>
+
+<hr>
+
+<p style="text-align: center; color: #94a3b8; font-size: 12px; margin-top: 40px;">
+  📄 AI Content Pipeline – Phương Edition &nbsp;|&nbsp; Bản quyền © 2026 Penny (Phương) &nbsp;|&nbsp; Tạo bởi Antigravity AI
+</p>
+
+</body>
+</html>

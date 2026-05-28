@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hướng Dẫn Sử Dụng – AI Content Pipeline</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #1e293b;
+    background: white;
+    line-height: 1.8;
+    padding: 48px 56px;
+    max-width: 850px;
+    margin: 0 auto;
+  }
+
+  /* Cover */
+  .cover {
+    text-align: center;
+    padding: 80px 40px;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #7c3aed 100%);
+    border-radius: 16px;
+    color: white;
+    margin-bottom: 48px;
+  }
+  .cover h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 18px; opacity: 0.9; margin-bottom: 24px; }
+  .cover .meta { font-size: 13px; opacity: 0.7; }
+
+  /* TOC */
+  .toc {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 40px;
+  }
+  .toc h2 { font-size: 16px; color: #64748b; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { font-size: 14px; color: #334155; margin-bottom: 6px; }
+  .toc li a { color: #2563eb; text-decoration: none; }
+
+  /* Sections */
+  h2 {
+    font-size: 22px;
+    color: #0f172a;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #2563eb;
+    page-break-before: auto;
+  }
+
+  h3 {
+    font-size: 16px;
+    color: #1e40af;
+    margin-top: 28px;
+    margin-bottom: 12px;
+  }
+
+  p { font-size: 14px; color: #475569; margin-bottom: 12px; }
+
+  /* Step boxes */
+  .step-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    border-left: 4px solid #2563eb;
+  }
+  .step-card.green { border-left-color: #16a34a; }
+  .step-card.purple { border-left-color: #7c3aed; }
+  .step-card.orange { border-left-color: #ea580c; }
+  .step-card.red { border-left-color: #dc2626; }
+
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #2563eb;
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+  .step-card.green .step-number { background: #16a34a; }
+  .step-card.purple .step-number { background: #7c3aed; }
+  .step-card.orange .step-number { background: #ea580c; }
+
+  .step-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    display: inline;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 8px;
+    padding-left: 38px;
+  }
+
+  /* Terminal block */
+  .terminal {
+    background: #1e293b;
+    color: #a5f3fc;
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 13px;
+    margin: 12px 0 16px 0;
+    line-height: 1.8;
+    position: relative;
+  }
+  .terminal::before {
+    content: '💻 Terminal';
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .terminal .comment { color: #64748b; }
+  .terminal .cmd { color: #67e8f9; }
+
+  /* Info boxes */
+  .info-box {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin: 16px 0;
+  }
+  .info-box.tip { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+  .info-box.warn { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+  .info-box.danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+  .info-box strong { display: block; margin-bottom: 4px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  th {
+    background: #1e293b;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #0f172a;
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  .checklist li {
+    font-size: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .checklist li::before {
+    content: '☐';
+    font-size: 16px;
+    color: #94a3b8;
+  }
+
+  /* Arrow connector */
+  .arrow {
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 20px;
+    margin: 4px 0;
+  }
+
+  /* Page break for print */
+  .page-break { page-break-before: always; }
+
+  hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 32px 0;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 11px;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  @media print {
+    body { padding: 24px; }
+    .cover { padding: 48px 24px; }
+    .step-card, table, .terminal { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== COVER ========== -->
+<div class="cover">
+  <div style="font-size: 48px; margin-bottom: 16px;">🚀</div>
+  <h1>AI Content Pipeline</h1>
+  <div class="subtitle">Hướng Dẫn Sử Dụng</div>
+  <div class="meta">Phiên bản 1.0 &nbsp;|&nbsp; Cập nhật: 23/04/2026 &nbsp;|&nbsp; Phương Edition</div>
+</div>
+
+<!-- ========== MỤC LỤC ========== -->
+<div class="toc">
+  <h2>📑 Mục Lục</h2>
+  <ol>
+    <li><a href="#s1">Yêu Cầu Trước Khi Bắt Đầu</a></li>
+    <li><a href="#s2">Cài Đặt Lần Đầu (Chỉ Làm 1 Lần)</a></li>
+    <li><a href="#s3">Quy Trình Sử Dụng Hàng Ngày</a></li>
+    <li><a href="#s4">Bước 1: Research – Tìm Kiếm Tin Tức</a></li>
+    <li><a href="#s5">Bước 2: Lọc & Chọn Format Viết Bài</a></li>
+    <li><a href="#s6">Bước 3: Review, Chọn Ảnh & Lên Lịch Đăng</a></li>
+    <li><a href="#s7">Bật Bot – Tự Động Tạo Video & Đăng Groups</a></li>
+    <li><a href="#s8">Câu Hỏi Thường Gặp (FAQ)</a></li>
+    <li><a href="#s9">Xử Lý Sự Cố</a></li>
+    <li><a href="#s10">Thông Tin Kỹ Thuật (Dành Cho Dev)</a></li>
+  </ol>
+</div>
+
+<!-- ========== 1. YÊU CẦU ========== -->
+<h2 id="s1">1. Yêu Cầu Trước Khi Bắt Đầu</h2>
+
+<ul class="checklist">
+  <li>Máy tính Mac hoặc Windows (đã cài <strong>Node.js</strong>)</li>
+  <li>Tài khoản <strong>Anthropic</strong> (có API Key – để AI viết bài)</li>
+  <li>Tài khoản <strong>OpenAI</strong> (có API Key – để AI tạo ảnh)</li>
+  <li>Tài khoản <strong>Facebook Page</strong> (có Access Token)</li>
+  <li>File <strong>cookies.json</strong> (Cookie đăng nhập Facebook cho Bot đăng Groups)</li>
+  <li>Kết nối Internet ổn định</li>
+</ul>
+
+<div class="info-box tip">
+  <strong>💡 Mẹo:</strong>
+  Tất cả API Key đã được cài sẵn trong file <code>.env.local</code>. Bạn chỉ cần thay đổi khi key hết hạn hoặc hết tiền.
+</div>
+
+<!-- ========== 2. CÀI ĐẶT LẦN ĐẦU ========== -->
+<h2 id="s2" class="page-break">2. Cài Đặt Lần Đầu (Chỉ Làm 1 Lần Duy Nhất)</h2>
+
+<div class="step-card">
+  <span class="step-number">1</span>
+  <span class="step-title">Tải source code về máy</span>
+  <div class="step-desc">Giải nén file ZIP hoặc clone từ Github</div>
+</div>
+
+<div class="terminal">
+  <span class="cmd">git clone https://github.com/mp1391004/ai-content-pipeline.git</span><br>
+  <span class="cmd">cd ai-content-pipeline</span>
+</div>
+
+<div class="step-card">
+  <span class="step-number">2</span>
+  <span class="step-title">Cài đặt thư viện cho Web</span>
+  <div class="step-desc">Cài tất cả các package cần thiết</div>
+</div>
+
+<div class="terminal">
+  <span class="cmd">npm install</span>
+</div>
+
+<div class="step-card">
+  <span class="step-number">3</span>
+  <span class="step-title">Cài đặt thư viện cho Bot</span>
+  <div class="step-desc">Cài riêng cho phần Bot làm video + đăng nhóm</div>
+</div>
+
+<div class="terminal">
+  <span class="cmd">cd bot</span><br>
+  <span class="cmd">npm install</span><br>
+  <span class="cmd">cd video-maker</span><br>
+  <span class="cmd">npm install</span>
+</div>
+
+<div class="step-card green">
+  <span class="step-number">4</span>
+  <span class="step-title">Cấu hình API Keys</span>
+  <div class="step-desc">Mở Terminal, gõ lệnh sau để tạo và chỉnh sửa file chứa API Keys</div>
+</div>
+
+<div class="terminal">
+<span class="comment"># Bước 1: Vào thư mục dự án</span><br>
+<span class="cmd">cd ai-content-pipeline</span><br><br>
+<span class="comment"># Bước 2: Mở file .env.local bằng trình soạn thảo nano</span><br>
+<span class="cmd">nano .env.local</span><br><br>
+<span class="comment"># Bước 3: Dán nội dung dưới đây vào, thay xxxxx bằng key thật của bạn:</span>
+</div>
+
+<div class="terminal">
+ANTHROPIC_API_KEY=sk-ant-xxxxx<br>
+OPENAI_API_KEY=sk-proj-xxxxx<br>
+DATABASE_URL=postgresql://xxxxx<br>
+FACEBOOK_ACCESS_TOKEN=EAAxxxxx<br>
+FACEBOOK_PAGE_ID=1234567890<br>
+RAPID_API_KEY=xxxxx<br>
+BRAVE_API_KEY=xxxxx
+</div>
+
+<div class="terminal">
+<span class="comment"># Bước 4: Lưu file</span><br>
+<span class="comment"># Bấm Ctrl + O (lưu) → Enter → Ctrl + X (thoát)</span><br><br>
+<span class="comment"># Hoặc nếu bạn quen dùng VS Code, gõ lệnh này thay cho nano:</span><br>
+<span class="cmd">code .env.local</span>
+</div>
+
+<div class="step-card green">
+  <span class="step-number">5</span>
+  <span class="step-title">Deploy Web lên Vercel</span>
+  <div class="step-desc">Đẩy code lên Github, Vercel sẽ tự động build</div>
+</div>
+
+<div class="terminal">
+  <span class="cmd">git add .</span><br>
+  <span class="cmd">git commit -m 'Initial deploy'</span><br>
+  <span class="cmd">git push</span>
+</div>
+
+<div class="info-box tip">
+  <strong>✅ Hoàn tất cài đặt!</strong>
+  Từ giờ trở đi, bạn chỉ cần làm theo <strong>Quy Trình Hàng Ngày</strong> ở phần tiếp theo.
+</div>
+
+<!-- ========== 3. QUY TRÌNH HÀNG NGÀY ========== -->
+<h2 id="s3" class="page-break">3. Quy Trình Sử Dụng Hàng Ngày</h2>
+
+<p>Mỗi ngày, bạn chỉ cần làm <strong>2 việc</strong>:</p>
+
+<table>
+  <tr><th style="width:60px">Việc</th><th>Hành động</th><th>Ở đâu</th><th>Mất bao lâu</th></tr>
+  <tr>
+    <td><strong>Việc 1</strong></td>
+    <td>🤖 Bật Bot (chỉ cần gõ 2 dòng lệnh)</td>
+    <td>Terminal máy tính</td>
+    <td>30 giây</td>
+  </tr>
+  <tr>
+    <td><strong>Việc 2</strong></td>
+    <td>🌐 Lên Web tạo bài, chọn ảnh, hẹn giờ đăng</td>
+    <td>Trình duyệt (điện thoại/laptop)</td>
+    <td>10 phút</td>
+  </tr>
+</table>
+
+<div class="info-box tip">
+  <strong>☕ Sau đó:</strong>
+  Đi cafe, làm việc khác. Bot sẽ tự động render video, upload Reels, đăng bài vào các nhóm Facebook đúng giờ bạn đã hẹn!
+</div>
+
+<!-- ========== 4. BƯỚC 1: RESEARCH ========== -->
+<h2 id="s4" class="page-break">4. Bước 1: Research – Tìm Kiếm Tin Tức</h2>
+
+<div class="step-card">
+  <span class="step-number">1</span>
+  <span class="step-title">Mở trang Web</span>
+  <div class="step-desc">Truy cập URL Vercel của bạn (ví dụ: <code>ai-content-pipeline-mp.vercel.app</code>)</div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card">
+  <span class="step-number">2</span>
+  <span class="step-title">Chọn nguồn tin muốn cào</span>
+  <div class="step-desc">
+    Tick chọn các nguồn tin tức bạn muốn hệ thống quét tự động:<br>
+    • <strong>Brave Search</strong> – Tin tức tổng hợp<br>
+    • <strong>X/Twitter</strong> – Bài trending trên MXH<br>
+    • <strong>Instagram</strong> – Bài viral trên IG<br>
+    • <strong>TechCrunch / a16z / IndieHackers</strong> – Tin chuyên ngành startup & AI
+  </div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card green">
+  <span class="step-number">3</span>
+  <span class="step-title">Bấm nút "Tìm kiếm"</span>
+  <div class="step-desc">Hệ thống sẽ <strong>tự động quét</strong> tất cả các nguồn đã chọn và hiển thị danh sách tin nóng mới nhất. Chờ 15-30 giây.</div>
+</div>
+
+<div class="info-box tip">
+  <strong>💡 Mẹo:</strong>
+  Không cần nhập từ khoá! Hệ thống sẽ tự động cào những bài mới nhất, trending nhất từ các nguồn bạn đã tick.
+</div>
+
+<!-- ========== 5. BƯỚC 2: LỌC & CHỌN ========== -->
+<h2 id="s5">5. Bước 2: Lọc & Chọn Format Viết Bài</h2>
+
+<div class="step-card">
+  <span class="step-number">1</span>
+  <span class="step-title">Tick chọn các bài hay</span>
+  <div class="step-desc">Đọc tiêu đề và tóm tắt, tick vào ô checkbox những bài bạn muốn viết lại</div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card">
+  <span class="step-number">2</span>
+  <span class="step-title">Chọn Format cho từng bài</span>
+  <div class="step-desc">
+    Mỗi bài có 2 lựa chọn:<br>
+    • <strong>📝 POV</strong> – Bài phân tích chuyên sâu, viết theo góc nhìn của Phương<br>
+    • <strong>⚡ TIN NHANH</strong> – Bài tin ngắn gọn, giật gân, dạng "Breaking News"
+  </div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card green">
+  <span class="step-number">3</span>
+  <span class="step-title">Bấm nút "✍️ Viết & Tạo ảnh cho X bài đã chọn"</span>
+  <div class="step-desc">
+    AI sẽ tự động:<br>
+    • <strong>Claude Opus 4.5</strong> viết bài theo persona Phương<br>
+    • <strong>DALL-E 3</strong> tạo ảnh minh hoạ phong cách Cinematic/Ghibli<br>
+    ⏱️ Chờ khoảng 30-60 giây mỗi bài
+  </div>
+</div>
+
+<div class="info-box warn">
+  <strong>⚠️ Lưu ý:</strong>
+  Nếu thấy thông báo <em>"CẢNH BÁO LỖI TỪ AI"</em>, nghĩa là API key hết tiền hoặc hết quota. Kiểm tra lại tài khoản Anthropic/OpenAI.
+</div>
+
+<!-- ========== 6. BƯỚC 3: REVIEW & LÊN LỊCH ========== -->
+<h2 id="s6" class="page-break">6. Bước 3: Review, Chọn Ảnh & Lên Lịch Đăng</h2>
+
+<div class="step-card">
+  <span class="step-number">1</span>
+  <span class="step-title">Đọc lại bài viết</span>
+  <div class="step-desc">Sửa nội dung nếu cần (bấm vào ô text để chỉnh sửa). Sửa hashtag nếu muốn.</div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card">
+  <span class="step-number">2</span>
+  <span class="step-title">Chọn ảnh minh hoạ</span>
+  <div class="step-desc">
+    Mỗi bài có 2 ảnh để chọn:<br>
+    • <strong>Ảnh Báo Gốc</strong> – ảnh từ bài viết nguồn<br>
+    • <strong>Ảnh AI Tạo</strong> – ảnh do DALL-E 3 vẽ<br>
+    Bấm vào ảnh muốn dùng, dấu ✓ xanh sẽ hiện lên.
+  </div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card">
+  <span class="step-number">3</span>
+  <span class="step-title">Cài đặt lịch đăng</span>
+  <div class="step-desc">
+    • <strong>Bắt đầu đăng từ (Giờ)</strong> – chọn ngày giờ bài đầu tiên lên sóng<br>
+    • <strong>Khoảng cách mỗi bài (Tiếng)</strong> – ví dụ: 3 = mỗi 3 tiếng đăng 1 bài<br>
+    • <strong>☑️ Tự động tạo & Đăng Video Reels</strong> – tick nếu muốn Bot làm video
+  </div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card">
+  <span class="step-number">4</span>
+  <span class="step-title">Tick chọn các bài muốn đăng</span>
+  <div class="step-desc">Tick vào ô checkbox bên trái các bài đã ưng ý</div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card purple">
+  <span class="step-number">5</span>
+  <span class="step-title">Bấm nút Đăng</span>
+  <div class="step-desc">
+    Có 3 lựa chọn:<br><br>
+    <table>
+      <tr><th>Nút</th><th>Tác dụng</th></tr>
+      <tr><td>📅 <strong>Đăng Page</strong></td><td>Chỉ đăng lên Facebook Page (theo lịch đã hẹn)</td></tr>
+      <tr><td>👥 <strong>Đăng Hội Nhóm</strong></td><td>Chỉ gửi lệnh cho Bot đăng vào các Groups</td></tr>
+      <tr><td>🚀 <strong>Đăng Tất Cả</strong></td><td>Đăng Page + Đăng Groups + Tạo Video (nếu tick)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="info-box tip">
+  <strong>🎯 Khuyên dùng:</strong>
+  Bấm <strong>"🚀 Đăng Tất Cả"</strong> cho nhanh gọn! Hệ thống sẽ tự lên lịch Page đúng giờ và gửi lệnh cho Bot xử lý phần còn lại.
+</div>
+
+<!-- ========== 7. BẬT BOT ========== -->
+<h2 id="s7" class="page-break">7. Bật Bot – Tự Động Tạo Video & Đăng Groups</h2>
+
+<h3>📌 Cách bật Bot (mỗi ngày 1 lần)</h3>
+
+<div class="step-card">
+  <span class="step-number">1</span>
+  <span class="step-title">Mở ứng dụng Terminal</span>
+  <div class="step-desc">Trên Mac: tìm "Terminal" trong Spotlight (⌘ + Space) hoặc trong Applications → Utilities</div>
+</div>
+<div class="arrow">⬇️</div>
+
+<div class="step-card">
+  <span class="step-number">2</span>
+  <span class="step-title">Gõ 2 dòng lệnh sau (mỗi dòng bấm Enter)</span>
+</div>
+
+<div class="terminal">
+  <span class="cmd">cd ~/.gemini/antigravity/scratch/ai-content-pipeline/bot</span><br>
+  <span class="cmd">node post-groups.js</span>
+</div>
+
+<div class="step-card green">
+  <span class="step-number">3</span>
+  <span class="step-title">Thu nhỏ Terminal xuống thanh Taskbar</span>
+  <div class="step-desc">
+    <strong>KHÔNG TẮT CỬA SỔ NÀY!</strong> Chỉ thu nhỏ (bấm nút vàng trên Mac). Bot sẽ chạy ngầm ở dưới.
+  </div>
+</div>
+
+<div class="info-box tip">
+  <strong>✅ Xong rồi!</strong>
+  Bot bây giờ sẽ tự động:
+  <ul style="margin-top: 8px; padding-left: 20px;">
+    <li>🎬 Render video cho các bài đã tick "Tạo Video"</li>
+    <li>📤 Upload Reels lên Facebook Page</li>
+    <li>👥 Đăng bài + ảnh vào các nhóm Facebook (đúng giờ hẹn)</li>
+    <li>🔄 Cứ 10 phút quét lại 1 lần xem có lệnh mới</li>
+  </ul>
+</div>
+
+<h3>📌 Khi nào cần bật lại Bot?</h3>
+<table>
+  <tr><th>Tình huống</th><th>Bật lại?</th></tr>
+  <tr><td>Tắt máy tính / Khởi động lại</td><td>✅ Cần bật lại (gõ 2 dòng lệnh)</td></tr>
+  <tr><td>Đóng cửa sổ Terminal</td><td>✅ Cần bật lại</td></tr>
+  <tr><td>Thu nhỏ Terminal (không tắt)</td><td>❌ Không cần, Bot vẫn chạy</td></tr>
+  <tr><td>Máy Sleep / Ngủ đông</td><td>❌ Không cần, máy thức dậy Bot tự chạy tiếp</td></tr>
+  <tr><td>Tạo bài mới trên Web</td><td>❌ Không cần, Bot tự quét và nhặt lệnh</td></tr>
+</table>
+
+<!-- ========== 8. FAQ ========== -->
+<h2 id="s8" class="page-break">8. Câu Hỏi Thường Gặp (FAQ)</h2>
+
+<h3>❓ Tôi có thể dùng trên điện thoại không?</h3>
+<p>✅ Có! Phần Web (tạo bài, chọn ảnh, hẹn giờ) hoạt động hoàn hảo trên điện thoại. Chỉ riêng phần Bot thì cần máy tính để chạy.</p>
+
+<h3>❓ Bot có chạy khi tôi không ở nhà không?</h3>
+<p>✅ Có, miễn là máy tính vẫn bật và Terminal không bị tắt. Bạn có thể lên Web bằng điện thoại ở bất kỳ đâu, tạo bài và hẹn giờ. Bot ở nhà sẽ tự làm.</p>
+
+<h3>❓ Tôi tick 5 bài làm video, nó làm 1 bài rồi nghỉ?</h3>
+<p>❌ Không! Bot sẽ làm liên tục hết 5 bài (cuốn chiếu) rồi mới nghỉ chờ lệnh mới.</p>
+
+<h3>❓ Bài hẹn 3h chiều, Bot có đăng nhóm trước 3h không?</h3>
+<p>❌ Không. Bot chỉ đăng nhóm khi đã tới giờ hẹn. Trước đó nó sẽ bỏ qua và quét lại sau 10 phút.</p>
+
+<h3>❓ Video Reels có lên đúng giờ tôi hẹn không?</h3>
+<p>✅ Có. Nếu bạn set lịch, video sẽ được upload ngay nhưng Facebook sẽ giữ và công bố đúng giờ hẹn.</p>
+
+<h3>❓ Tôi muốn thay đổi danh sách nhóm Facebook?</h3>
+<p>Mở file <code>bot/post-groups.js</code>, tìm biến <code>GROUPS</code> ở đầu file, thêm/xoá URL nhóm.</p>
+
+<h3>❓ Cookie Facebook hết hạn thì sao?</h3>
+<p>Mở trình duyệt Chrome, đăng nhập Facebook, dùng extension xuất cookies ra file <code>cookies.json</code>, thay thế file cũ trong thư mục <code>bot/</code>.</p>
+
+<!-- ========== 9. XỬ LÝ SỰ CỐ ========== -->
+<h2 id="s9" class="page-break">9. Xử Lý Sự Cố</h2>
+
+<table>
+  <tr><th style="width: 30%">Lỗi gặp phải</th><th style="width: 30%">Nguyên nhân</th><th>Cách khắc phục</th></tr>
+  <tr>
+    <td>Web báo <strong>"CẢNH BÁO LỖI TỪ AI"</strong></td>
+    <td>API key hết tiền hoặc quota</td>
+    <td>Vào <code>console.anthropic.com</code> hoặc <code>platform.openai.com</code> kiểm tra credit, nạp thêm tiền</td>
+  </tr>
+  <tr>
+    <td>Web báo <strong>"404 model not found"</strong></td>
+    <td>Model AI bị giới hạn</td>
+    <td>Liên hệ người phát triển để đổi model trong code</td>
+  </tr>
+  <tr>
+    <td>Terminal báo <strong>"MODULE_NOT_FOUND"</strong></td>
+    <td>Chạy <code>node post-groups.js</code> sai thư mục</td>
+    <td>Phải gõ <code>cd bot</code> trước, rồi mới gõ <code>node post-groups.js</code></td>
+  </tr>
+  <tr>
+    <td>Bot báo <strong>"cookies lỗi"</strong></td>
+    <td>Cookie Facebook đã hết hạn</td>
+    <td>Xuất lại <code>cookies.json</code> từ trình duyệt Chrome</td>
+  </tr>
+  <tr>
+    <td>Video <strong>không render được</strong></td>
+    <td>Thiếu thư viện Remotion</td>
+    <td>Gõ: <code>cd bot/video-maker && npm install</code></td>
+  </tr>
+  <tr>
+    <td>Facebook <strong>chặn đăng nhóm</strong></td>
+    <td>Đăng quá nhanh / IP bất thường</td>
+    <td>Chờ 24 giờ rồi thử lại. Không đăng quá 10 nhóm/ngày</td>
+  </tr>
+  <tr>
+    <td>Giao diện điện thoại <strong>bị vỡ</strong></td>
+    <td>Cache trình duyệt cũ</td>
+    <td>Xoá cache: Settings → Safari → Clear Cache. Hoặc dùng Chrome bấm <code>Ctrl+Shift+R</code></td>
+  </tr>
+  <tr>
+    <td>Web <strong>không load được</strong></td>
+    <td>Vercel chưa build xong</td>
+    <td>Chờ 2 phút sau khi push code, rồi F5 lại</td>
+  </tr>
+</table>
+
+<!-- ========== 10. THÔNG TIN KỸ THUẬT ========== -->
+<h2 id="s10" class="page-break">10. Thông Tin Kỹ Thuật (Dành Cho Dev)</h2>
+
+<h3>Cấu trúc thư mục:</h3>
+<div class="terminal">
+ai-content-pipeline/<br>
+├── src/app/<br>
+│   ├── page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Giao diện chính<br>
+│   ├── globals.css &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← CSS + Responsive<br>
+│   └── api/<br>
+│   &nbsp;&nbsp;&nbsp;&nbsp;├── research/route.ts &nbsp;← API cào tin<br>
+│   &nbsp;&nbsp;&nbsp;&nbsp;├── write/route.ts &nbsp;&nbsp;&nbsp;&nbsp;← API viết bài + tạo ảnh<br>
+│   &nbsp;&nbsp;&nbsp;&nbsp;└── approve/route.ts &nbsp;&nbsp;← API duyệt + đăng Page<br>
+├── src/lib/ai/<br>
+│   ├── writer.ts &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Claude Opus 4.5<br>
+│   └── image-generator.ts &nbsp;← DALL-E 3<br>
+├── bot/<br>
+│   ├── post-groups.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 🤖 Bot chính<br>
+│   ├── cookies.json &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Cookie Facebook<br>
+│   └── video-maker/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Remotion project<br>
+├── .env.local &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← API Keys<br>
+└── package.json
+</div>
+
+<h3>Cách cập nhật code:</h3>
+<div class="terminal">
+  <span class="comment"># Vào thư mục dự án</span><br>
+  <span class="cmd">cd ~/.gemini/antigravity/scratch/ai-content-pipeline</span><br><br>
+  <span class="comment"># Sửa code xong thì chạy 3 lệnh:</span><br>
+  <span class="cmd">git add .</span><br>
+  <span class="cmd">git commit -m 'Mo ta thay doi'</span><br>
+  <span class="cmd">git push</span><br><br>
+  <span class="comment"># Vercel sẽ tự động deploy sau 1-2 phút</span>
+</div>
+
+<h3>Biến môi trường:</h3>
+<table>
+  <tr><th>Biến</th><th>Dùng ở</th><th>Mô tả</th></tr>
+  <tr><td><code>ANTHROPIC_API_KEY</code></td><td>Vercel</td><td>Claude Opus 4.5 – viết bài</td></tr>
+  <tr><td><code>OPENAI_API_KEY</code></td><td>Vercel</td><td>DALL-E 3 – tạo ảnh</td></tr>
+  <tr><td><code>DATABASE_URL</code></td><td>Cả hai</td><td>Neon PostgreSQL</td></tr>
+  <tr><td><code>FACEBOOK_ACCESS_TOKEN</code></td><td>Cả hai</td><td>Token FB Page</td></tr>
+  <tr><td><code>FACEBOOK_PAGE_ID</code></td><td>Cả hai</td><td>ID Page</td></tr>
+  <tr><td><code>RAPID_API_KEY</code></td><td>Vercel</td><td>Cào MXH</td></tr>
+  <tr><td><code>GEMINI_API_KEY</code></td><td>Bot</td><td>TTS + Script</td></tr>
+</table>
+
+<hr>
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">
+  📄 AI Content Pipeline – Hướng Dẫn Sử Dụng v1.0 &nbsp;|&nbsp; © 2026 Penny (Phương) &nbsp;|&nbsp; Powered by Antigravity AI
+</div>
+
+</body>
+</html>

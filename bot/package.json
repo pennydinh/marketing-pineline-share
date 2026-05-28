@@ -1,0 +1,15 @@
+{
+  "name": "fb-group-poster-bot",
+  "version": "1.0.0",
+  "description": "Playwright bot đăng bài lên Facebook Groups AS Page Đinh Phương",
+  "main": "post-groups.js",
+  "scripts": {
+    "post": "node post-groups.js",
+    "install-browser": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "dotenv": "^16.4.5",
+    "playwright": "^1.44.0"
+  }
+}
