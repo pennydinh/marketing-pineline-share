@@ -1,69 +1,106 @@
-# Hướng dẫn cài đặt và sử dụng Hệ thống AI Content Pipeline
+# Hướng dẫn cài đặt & sử dụng — AI Content Pipeline
 
-Hệ thống này giúp bạn tự động tìm kiếm tin tức, lên kịch bản và tạo bài đăng/video hoàn toàn tự động bằng sức mạnh của AI (Claude, OpenAI) và Remotion.
+Hệ thống tự động **Research → Chọn format → Viết bài** bằng AI (Claude / OpenAI) và render video (Remotion).
+
+---
 
 ## Yêu cầu cơ bản
-- Máy tính đã cài đặt [Node.js](https://nodejs.org/en) (Phiên bản >= 18).
-- Có tài khoản và API Key của các dịch vụ sau: OpenAI, Anthropic (Claude), RapidAPI (nếu dùng các luồng crawl data), và Vercel Postgres (nếu cần database).
-- Đã cài đặt Git (tùy chọn nhưng khuyên dùng).
+- [Node.js](https://nodejs.org/en) phiên bản **>= 18**.
+- Một database Postgres (miễn phí ở [Neon](https://neon.tech)).
+- API key AI để viết bài (Anthropic **hoặc** Kyma — xem bên dưới).
+- Git (tùy chọn nhưng khuyên dùng).
 
 ---
 
-## Bước 1: Cài đặt và thiết lập môi trường
+## Bước 1: Cài đặt
 
-1. **Mở thư mục code**
-   Mở ứng dụng Terminal (Mac/Linux) hoặc Command Prompt / PowerShell (Windows) và truy cập vào thư mục của dự án này.
-   ```bash
-   cd du-ong-dan-vao-thu-muc-du-an
-   ```
-
-2. **Cài đặt thư viện**
-   Chạy lệnh sau để cài toàn bộ thư viện cần thiết:
-   ```bash
-   npm install
-   ```
-
-3. **Cấu hình API Keys**
-   - Bạn sẽ thấy một file tên là `.env.example`.
-   - Copy file này hoặc đổi tên nó thành `.env.local`.
-   - Mở file `.env.local` lên bằng bất kỳ trình soạn thảo nào (Notepad, VSCode...).
-   - Điền các thông tin API Key của bạn vào trong dấu ngoặc kép.
-     - `OPENAI_API_KEY`: Lấy từ trang platform.openai.com.
-     - `FACEBOOK_ACCESS_TOKEN`: Lấy từ Meta for Developers.
-     - `POSTGRES_URL`: Lấy từ NeonDB hoặc Vercel.
+```bash
+cd duong-dan-vao-thu-muc-du-an
+npm install
+```
 
 ---
 
-## Bước 2: Tùy chỉnh thông tin cá nhân
+## Bước 2: Cấu hình API Keys
 
-- **Đổi Logo:** Thay thế file `logo-placeholder.jpg` trong mục `bot/assets/` bằng logo thương hiệu của bạn (đặt tên lại thành `logo-placeholder.jpg` hoặc sửa tên trong code tương ứng).
-- **Đổi Tên Kênh:** Nếu có các đoạn code chứa chữ `@YOUR_USERNAME` (ví dụ ở phần video render), hãy sửa lại thành tên tài khoản thực tế của bạn (VD: `@ai_news`).
+Copy file `.env.example` (hoặc `.env.local` đã có sẵn) rồi điền key. Không phải điền hết — chỉ điền theo nhu cầu:
+
+### 🔴 Bắt buộc (tối thiểu để chạy được)
+| Biến | Dùng để làm gì | Lấy ở đâu |
+|---|---|---|
+| `POSTGRES_URL` | Lưu & đọc bài Research | [Neon](https://neon.tech) → tạo project → copy connection string |
+| `ANTHROPIC_API_KEY` | AI viết bài (bước Write) | [console.anthropic.com](https://console.anthropic.com) |
+
+> 💡 **Muốn tiết kiệm chi phí AI?** Có thể thay Anthropic bằng [Kyma](https://kymaapi.com?aff=offer) — một proxy tương thích Anthropic nhưng giá mềm hơn nhiều. Chỉ cần điền key Kyma vào `ANTHROPIC_API_KEY` và bỏ dấu `#` ở dòng `ANTHROPIC_BASE_URL="https://kymaapi.com"` trong `.env.local`. Không cần sửa code.
+
+### 🟡 Research nâng cao (chỉ cần nếu quét mạng xã hội)
+Nếu chỉ dùng nguồn **News (RSS)** thì bỏ qua phần này.
+
+| Biến | Dùng để làm gì | Lấy ở đâu |
+|---|---|---|
+| `BRAVE_API_KEY` | Quét Instagram + bổ trợ tìm kiếm | [Brave Search API](https://brave.com/search/api) (có bậc miễn phí) |
+| `RAPID_API_KEY` | Quét X (Twitter) qua RapidAPI | [rapidapi.com](https://rapidapi.com) (gói *twitter-api47*) |
+| `APIFY_API_TOKEN` | Scraper ổn định hơn cho IG/X/TikTok | [Apify](https://www.apify.com?fpr=get-api) |
+
+### ⚪ Tùy chọn
+| Biến | Dùng để làm gì |
+|---|---|
+| `OPENAI_API_KEY` | **Chỉ** để tạo ảnh (không cần cho Research/Write) |
+| `FACEBOOK_ACCESS_TOKEN`, `FACEBOOK_PAGE_ID`… | Tự động đăng bài lên Facebook |
 
 ---
 
-## Bước 3: Chạy ứng dụng
+## Bước 3: Chạy thử ở máy
 
-1. **Khởi chạy giao diện chính**
-   ```bash
-   npm run dev
-   ```
-   Sau đó mở trình duyệt ở địa chỉ: `http://localhost:3000`
-   Tại giao diện này, bạn có thể thực hiện 3 bước:
-   - **Research**: AI sẽ quét các nguồn báo chí (TechCrunch, a16z...) để tìm tin tức mới nhất.
-   - **Select/Format**: Chọn định dạng bài và số lượng.
-   - **Write**: Hệ thống sẽ yêu cầu Claude viết bài tự động.
-
-2. **(Nâng cao) Khởi chạy luồng render Video**
-   Chuyển hướng vào thư mục bot video:
-   ```bash
-   cd bot/video-maker
-   npm install
-   npm start
-   ```
+```bash
+npm run dev
+```
+Mở `http://localhost:3000`, làm theo 3 bước trên giao diện:
+- **Research** — quét nguồn (chọn News / X / Instagram). Mới bắt đầu nên chọn **News**.
+- **Select / Format** — chọn định dạng & số lượng bài.
+- **Write** — Claude (hoặc Kyma) viết bài tự động.
 
 ---
 
-## Xuất file Hướng dẫn này ra định dạng PDF
-Nếu bạn đang xem file Markdown này trên các trình duyệt hỗ trợ Markdown hoặc trên ứng dụng như Visual Studio Code, bạn có thể dễ dàng xuất nó ra PDF bằng cách:
-1. (VSCode): Cài đặt extension "Markdown PDF", click chuột phải vào nội dung và chọn "Export to PDF".
-2. Hoặc upload nội dung chữ này vào Chatbot AI, hoặc phần mềm Word để lưu dưới định dạng `.pdf` chia sẻ cho bạn bè.
+## Bước 4: Đưa lên mạng (Deploy)
+
+### 🆓 Miễn phí — Railway (khuyên dùng để bắt đầu)
+[Railway](https://railway.com?referralCode=vibe-code) deploy Next.js chỉ vài phút, có sẵn Postgres.
+
+1. Đăng ký tại [railway.com](https://railway.com?referralCode=vibe-code) (mã giới thiệu: `vibe-code`).
+2. **New Project → Deploy from GitHub repo** → chọn repo này.
+3. **New → Database → Add PostgreSQL**, rồi copy connection string vào biến `POSTGRES_URL` trong tab **Variables**.
+4. Thêm nốt các biến còn lại (`ANTHROPIC_API_KEY`…) vào **Variables**.
+5. Railway tự build & cấp domain `*.up.railway.app`. Xong.
+
+### 💳 Trả phí / dùng lâu dài — Hostinger
+Muốn hosting mạnh, domain riêng, ổn định thì dùng [Hostinger](https://hostinger.com/PENNYDEAL) (áp mã **PENNYDEAL** / **PENNYDEAL10** để giảm giá — link: [hostinger.com/PENNYDEAL10](https://hostinger.com/PENNYDEAL10)).
+
+1. Mua gói **VPS** hoặc **Cloud/Node.js hosting** tại [Hostinger](https://hostinger.com/PENNYDEAL).
+2. Cài Node.js >= 18 trên server, `git clone` repo về.
+3. Tạo file `.env.local` với đầy đủ key như Bước 2.
+4. `npm install && npm run build && npm start` (hoặc dùng `pm2` để chạy nền).
+5. Trỏ domain về server qua phần DNS của Hostinger.
+
+> Gợi ý: mới thử nghiệm → **Railway** cho nhanh & free. Chạy thật, cần domain + tài nguyên ổn định → **Hostinger**.
+
+---
+
+## (Nâng cao) Render video
+```bash
+cd bot/video-maker
+npm install
+npm start
+```
+
+---
+
+## Tùy chỉnh thương hiệu
+- **Logo:** thay `logo-placeholder.jpg` trong `bot/assets/`.
+- **Tên kênh:** tìm & thay `@YOUR_USERNAME` trong code thành tài khoản của bạn.
+
+---
+
+## Xuất hướng dẫn ra PDF
+- **VSCode:** cài extension *Markdown PDF* → chuột phải → *Export to PDF*.
+- Hoặc dán nội dung vào Word / Google Docs rồi lưu `.pdf`.
